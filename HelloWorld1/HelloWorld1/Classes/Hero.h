@@ -22,5 +22,8 @@ public:
     bool init();
     
     CREATE_FUNC(Hero);
+    
+    std::function<void(cocos2d::Point, float)> walk;
+    std::function<void(void)> stop;
 };
 #endif /* defined(__HelloWorld1__Hero__) */

@@ -35,6 +35,10 @@ public:
     void onHeroStop();
     void onHeroDead(BaseSprite *pTarget);
     
+    void onEnemyAttack(BaseSprite *pSprite);
+    void onEnemyDead(BaseSprite *pTarget);
+    void addEnemy();
+    
     void exitApp(Ref* pSender);
     
     CC_SYNTHESIZE_READONLY(Hero*, m_pHero, Hero);

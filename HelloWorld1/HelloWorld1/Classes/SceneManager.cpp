@@ -12,6 +12,16 @@
 
 static SceneManager *s_pSceneManager = NULL;
 
+SceneManager::SceneManager()
+{
+    
+}
+
+SceneManager::~SceneManager()
+{
+    
+}
+
 SceneManager* SceneManager::getInstance()
 {
     if (!s_pSceneManager)

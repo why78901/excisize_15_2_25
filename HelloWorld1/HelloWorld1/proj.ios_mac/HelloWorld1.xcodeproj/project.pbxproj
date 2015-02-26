@@ -53,6 +53,7 @@
 		65D568811A9DA04C000EB8A7 /* BaseSprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65D5687F1A9DA04C000EB8A7 /* BaseSprite.cpp */; };
 		65D568841A9DC29E000EB8A7 /* SceneManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65D568821A9DC29E000EB8A7 /* SceneManager.cpp */; };
 		65D568871A9DC35D000EB8A7 /* GameOverScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65D568851A9DC35D000EB8A7 /* GameOverScene.cpp */; };
+		65D5688F1A9ECE8D000EB8A7 /* Enemy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 65D5688D1A9ECE8D000EB8A7 /* Enemy.cpp */; };
 		A26E47D3A498AB0ADAC85CF9 /* res in Resources */ = {isa = PBXBuildFile; fileRef = 435C40AC8DC8098A3DFD0FE0 /* res */; };
 		AD9F4042A3BB98273BCD18C0 /* res in Resources */ = {isa = PBXBuildFile; fileRef = 435C40AC8DC8098A3DFD0FE0 /* res */; };
 		BF171245129291EC00B8313A /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF170DB012928DE900B8313A /* OpenGLES.framework */; };
@@ -123,6 +124,8 @@
 		65D568831A9DC29E000EB8A7 /* SceneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneManager.h; sourceTree = "<group>"; };
 		65D568851A9DC35D000EB8A7 /* GameOverScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameOverScene.cpp; sourceTree = "<group>"; };
 		65D568861A9DC35D000EB8A7 /* GameOverScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameOverScene.h; sourceTree = "<group>"; };
+		65D5688D1A9ECE8D000EB8A7 /* Enemy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Enemy.cpp; sourceTree = "<group>"; };
+		65D5688E1A9ECE8D000EB8A7 /* Enemy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Enemy.h; sourceTree = "<group>"; };
 		7C6F44AB94788DFDFB07133F /* libcocos2d Mac.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libcocos2d Mac.a"; path = "/Applications/Cocos/frameworks/cocos2d-x/prebuilt/mac/libcocos2d Mac.a"; sourceTree = "<absolute>"; };
 		BF170DB012928DE900B8313A /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		BF170DB412928DE900B8313A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -249,6 +252,8 @@
 				65D568771A9D7CD1000EB8A7 /* GameLayer.h */,
 				65D568791A9D7CDD000EB8A7 /* OperateLayer.cpp */,
 				65D5687A1A9D7CDD000EB8A7 /* OperateLayer.h */,
+				65D5688D1A9ECE8D000EB8A7 /* Enemy.cpp */,
+				65D5688E1A9ECE8D000EB8A7 /* Enemy.h */,
 				65D5687C1A9D8121000EB8A7 /* Hero.cpp */,
 				65D5687D1A9D8121000EB8A7 /* Hero.h */,
 				65D5687F1A9DA04C000EB8A7 /* BaseSprite.cpp */,
@@ -434,6 +439,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65D5688F1A9ECE8D000EB8A7 /* Enemy.cpp in Sources */,
 				65D568871A9DC35D000EB8A7 /* GameOverScene.cpp in Sources */,
 				65D568751A9D7B6C000EB8A7 /* GameScene.cpp in Sources */,
 				46880B8819C43A87006E1F66 /* AppDelegate.cpp in Sources */,
