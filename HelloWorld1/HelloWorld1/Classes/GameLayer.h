@@ -39,6 +39,10 @@ public:
     void onEnemyDead(BaseSprite *pTarget);
     void addEnemy();
     
+    void update(float dt);
+    void updateHero(float dt);
+    void updateEnemies(float dt);
+    
     void exitApp(Ref* pSender);
     
     CC_SYNTHESIZE_READONLY(Hero*, m_pHero, Hero);

@@ -50,3 +50,28 @@ bool Enemy::init()
     return ret;
 }
 
+void Enemy::execute(const cocos2d::Point &target, float targetBodyWidth)
+{
+    if (m_nextDecisionTime == 0)
+    {
+        this->decide(target, targetBodyWidth);
+    }
+    else
+    {
+        --m_nextDecisionTime;
+    }
+}
+
+void Enemy::decide(const cocos2d::Point &target, float targetBodyWidth)
+{
+    Point location = this->getPosition();
+    float distance = location.getDistance(target);
+    distance = distance - (targetBodyWidth / 2 + this->getDisplayFrame()->getRect().size.width / 2) + 30;
+    
+    bool isFlippedX = this->isFlippedX();
+    bool isOnTargetLeft = (location.x < target.x ? true : false);
+    if (isFlippedX)
+    {
+        <#statements#>
+    }
+}

@@ -104,10 +104,83 @@ bool GameLayer::init()
         m_pEnemies->retain();
         for (int i = 0;  i < MIN_ENEMY_COUNT; ++i)
         {
-//            this->add
+            this->addEnemy();
         }
+        
+        CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic(PATH_BG_MUSIC,true);
+        CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(PATH_HERO_TALK_EFFECT);
+        
+        this->scheduleUpdate();
+        
+        ret = true;
     } while (0);
+    
     return ret;
+}
+
+void GameLayer::update(float dt)
+{
+    this->updateHero(dt);
+    this->updateEnemies(dt);
+}
+
+void GameLayer::updateHero(float dt)
+{
+    if (m_pHero->getCurrActionState() == ACTION_STATE_WALK)
+    {
+        float halfHeroFrameHeight = (m_pHero->getDisplayFrame()->getRect().size.height) / 2;
+        Point expectP = m_pHero->getPosition() + m_pHero->getVelocity();
+        Point actualP = expectP;
+        
+        if (expectP.y < halfHeroFrameHeight || expectP.y > (m_fTileHeight * 3 + halfHeroFrameHeight))
+        {
+            actualP.y = m_pHero->getPositionY();
+        }
+        float mapWidth = m_pTiledMap->getContentSize().width;
+        float halfWinwidth = m_fScreenWidth / 2;
+        float halfHeroFrameWidth = (m_pHero->getDisplayFrame()->getRect().size.width) / 2;
+        if (expectP.x > halfWinwidth && expectP.x <= (mapWidth - halfWinwidth))
+        {
+            this->setPositionX(this->getPositionX() - m_pHero->getVelocity().x);
+            this->m_pBlood->setPositionX(this->m_pBlood->getPositionX() + m_pHero->getVelocity().x);
+            this->m_pBloodBg->setPositionX(this->m_pBloodBg->getPositionX() + m_pHero->getVelocity().x);
+            this->m_pCloseItem->setPositionX(this->m_pCloseItem->getPositionX() + m_pHero->getVelocity().x);
+        }
+        else if(expectP.x < halfHeroFrameWidth || expectP.x >= mapWidth -halfHeroFrameWidth)
+        {
+            actualP.x = m_pHero->getPositionX();
+        }
+        
+        m_pHero->setPosition(actualP);
+        m_pHero->setZOrder(m_fScreenHeight - m_pHero->getPositionY());
+    }
+}
+void GameLayer::updateEnemies(float dt)
+{
+    Ref *pObj = NULL;
+    Point distance = Point::ZERO;
+    if (m_pEnemies->count() < MIN_ENEMY_COUNT)
+    {
+        this->addEnemy();
+    }
+    
+    Point heroLocation = m_pHero->getPosition();
+    if (!m_pHero->isLive())
+    {
+        heroLocation = Point(-1000,-1000);
+    }
+    cocos2d::__Array *pRemovedEnemies = Array::create();
+    CCARRAY_FOREACH(m_pEnemies, pObj)
+    {
+        Enemy *pEnemy = (Enemy*)pObj;
+        if (pEnemy->getCurrActionState() == ACTION_STATE_REMOVE)
+        {
+            CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(PATH_ENEMY_DEAD_EFFECT);
+            pRemovedEnemies->addObject(pEnemy);
+            continue;
+        }
+//        pEnemy->
+    }
 }
 
 void GameLayer::exitApp(Ref* pSender)
@@ -220,6 +293,11 @@ void GameLayer::onEnemyAttack(BaseSprite *pSprite)
     }
 }
 
+void GameLayer::onEnemyDead(BaseSprite *pTarget)
+{
+    pTarget->removeSprite();
+}
+
 void GameLayer::addEnemy()
 {
     Size winSize = Director::getInstance()->getWinSize();
@@ -252,5 +330,17 @@ void GameLayer::addEnemy()
         location.y = halfEnemyFrameHeight;
     }
     
-//    pEnemy->attack = CC_CALLBACK_0(GameLayer::onen, <#__target__, ...#>)
+    pEnemy->attack = CC_CALLBACK_0(GameLayer::onEnemyDead, this,pEnemy);
+    pEnemy->onDeadCallback = CC_CALLBACK_0(GameLayer::onEnemyDead, this,pEnemy);
+    pEnemy->setPosition(m_origin + location);
+    pEnemy->setZOrder(m_fScreenHeight - pEnemy->getPositionY());
+    pEnemy->runIdleAction();
+    pEnemy->setAttack(5);
+    pEnemy->setHP(30);
+    pEnemy->setVelocity(Point(0.5f,0.5f));
+    pEnemy->setEyeArea(200);
+    pEnemy->setAttackArea(25);
+    
+    m_pEnemies->addObject(pEnemy);
+    m_pSpriteNodes->addChild(pEnemy);
 }
