@@ -35,9 +35,10 @@ public:
     CC_SYNTHESIZE(float, m_attackArea, AttackArea)
     CC_SYNTHESIZE(AiState, m_aiState, AiState);
     
-    
+    void execute(const cocos2d::Point& target, float targetBodyWidth);
     
 private:
+    void decide(const cocos2d::Point& target, float targetBodyWidth);
     
     unsigned int m_nextDecisionTime;
 };
