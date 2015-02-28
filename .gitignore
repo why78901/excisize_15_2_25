@@ -1,3 +1,10 @@
-*~
-.DS_Store
-UserInterfaceState.xcuserstate
+# 二进制文件
+*.dblite
+
+*.pbxuser
+*.xcuserstate
+*.DS_Store
+*.classpath
+*.pyc
+*.xcuserdatad
+*.xccheckout
