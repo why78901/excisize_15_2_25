@@ -29,6 +29,13 @@ public:
     CC_SYNTHESIZE(Hero*, m_pHero, Hero);
     
 private:
+    
+    void showJoystick(cocos2d::Point pos);
+    void updateJoystick(cocos2d::Point direction, float distance);
+    
+    
+    void hideJoystick();
+    
     Sprite *m_pJoystick;
     Sprite *m_pJoystickBg;
     

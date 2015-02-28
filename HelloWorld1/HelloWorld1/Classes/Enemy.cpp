@@ -70,8 +70,57 @@ void Enemy::decide(const cocos2d::Point &target, float targetBodyWidth)
     
     bool isFlippedX = this->isFlippedX();
     bool isOnTargetLeft = (location.x < target.x ? true : false);
-    if (isFlippedX)
+    if((isFlippedX && isOnTargetLeft) || (!isFlippedX && !isOnTargetLeft))
     {
-        <#statements#>
+        this->m_aiState = CCRANDOM_0_1() > 0.5f ? AI_PATROL : AI_IDLE;
+    }else
+    {
+        if(distance < m_eyeArea)
+        {
+            this->m_aiState = distance < m_attackArea ? AI_ATTACK : AI_PURSUIT;
+        }
+        else
+        {
+            this->m_aiState = CCRANDOM_0_1() > 0.5f ? AI_PATROL : AI_IDLE;
+        }
+    }
+    switch(m_aiState)
+    {
+        case AI_ATTACK:
+        {
+            this->runAttackAction();
+            this->attack();
+            this->m_nextDecisionTime = 50;
+        }
+            break;
+        case AI_IDLE:
+        {
+            this->runIdleAction();
+            this->m_nextDecisionTime = CCRANDOM_0_1() * 100;
+        }
+            break;
+        case AI_PATROL:
+        {
+            this->runWalkAction();
+            this->m_moveDirection.x = CCRANDOM_MINUS1_1();
+            this->m_moveDirection.y = CCRANDOM_MINUS1_1();
+            m_moveDirection.x  = m_moveDirection.x > 0 ? (m_moveDirection.x + m_fVelocity.x) : (m_moveDirection.x - m_fVelocity.x);
+            m_moveDirection.y  = m_moveDirection.y > 0 ? (m_moveDirection.y + m_fVelocity.y) : (m_moveDirection.y - m_fVelocity.y);
+            this->m_nextDecisionTime = CCRANDOM_0_1() * 100;
+        }
+            break;
+        case AI_PURSUIT:
+        {
+            this->runWalkAction();
+            //v.normalize() function return the unit vector of v
+            Point value = target - location;
+            value.normalize();
+            this->m_moveDirection = value;
+            this->setFlippedX(m_moveDirection.x < 0 ? true : false);
+            m_moveDirection.x  = m_moveDirection.x > 0 ? (m_moveDirection.x + m_fVelocity.x) : (m_moveDirection.x - m_fVelocity.x);
+            m_moveDirection.y  = m_moveDirection.y > 0 ? (m_moveDirection.y + m_fVelocity.y) : (m_moveDirection.y - m_fVelocity.y);
+            this->m_nextDecisionTime = 10;
+        }
+            break;
     }
 }

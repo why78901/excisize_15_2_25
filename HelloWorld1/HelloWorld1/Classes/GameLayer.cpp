@@ -69,7 +69,7 @@ bool GameLayer::init()
         this->addChild(m_pSpriteNodes);
         
         m_pHero = Hero::create();
-        m_pHero->setPosition(m_origin = Point(100,100));
+        m_pHero->setPosition(m_origin + Point(100,100));
         m_pHero->runIdleAction();
         m_pHero->setZOrder(m_fScreenHeight - m_pHero->getPositionY());
         m_pHero->setAttack(5);
@@ -159,28 +159,54 @@ void GameLayer::updateEnemies(float dt)
 {
     Ref *pObj = NULL;
     Point distance = Point::ZERO;
-    if (m_pEnemies->count() < MIN_ENEMY_COUNT)
+    //log("enemies count = %d", m_pEnemies->count());
+    if(m_pEnemies->count() < MIN_ENEMY_COUNT)
     {
         this->addEnemy();
     }
     
     Point heroLocation = m_pHero->getPosition();
-    if (!m_pHero->isLive())
+    if(!m_pHero->isLive())
     {
-        heroLocation = Point(-1000,-1000);
+        heroLocation = Point(-1000, -1000);
     }
     cocos2d::__Array *pRemovedEnemies = Array::create();
     CCARRAY_FOREACH(m_pEnemies, pObj)
     {
         Enemy *pEnemy = (Enemy*)pObj;
-        if (pEnemy->getCurrActionState() == ACTION_STATE_REMOVE)
+        if(pEnemy->getCurrActionState() == ACTION_STATE_REMOVE)
         {
             CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(PATH_ENEMY_DEAD_EFFECT);
             pRemovedEnemies->addObject(pEnemy);
             continue;
         }
-//        pEnemy->
+        pEnemy->execute(heroLocation, m_pHero->getDisplayFrame()->getRect().size.width);
+        
+        if(pEnemy->getCurrActionState() == ACTION_STATE_WALK)
+        {
+            Point location = pEnemy->getPosition();
+            Point direction = pEnemy->getMoveDirection();
+            
+            Point expect = location + direction;
+            float halfEnemyFrameHeight = (pEnemy->getDisplayFrame()->getRect().size.height) / 2;
+            if(expect.y < halfEnemyFrameHeight || expect.y > (m_fTileHeight * 3 + halfEnemyFrameHeight) )
+            {
+                direction.y = 0;
+            }
+            pEnemy->setFlippedX(direction.x < 0 ? true : false);
+            pEnemy->setPosition(location + direction);
+            pEnemy->setZOrder(pEnemy->getPositionY());
+        }
     }
+    
+    CCARRAY_FOREACH(pRemovedEnemies, pObj)
+    {
+        Enemy *pEnemy = (Enemy*)pObj;
+        m_pEnemies->removeObject(pEnemy);
+        m_pSpriteNodes->removeChild(pEnemy, true);
+    }
+    
+    pRemovedEnemies->removeAllObjects();
 }
 
 void GameLayer::exitApp(Ref* pSender)
@@ -307,37 +333,33 @@ void GameLayer::addEnemy()
     float halfEnemyFrameHeight = (pEnemy->getDisplayFrame()->getRect().size.height) / 2;
     float heroPosX = m_pHero->getPositionX();
     float halfWinWidth = (winSize.width / 2);
-    while (fabsf(heroPosX - location.x) < 150)
+    while(fabsf(heroPosX - location.x) < 150)
     {
-        if (heroPosX < halfWinWidth)
+        if(heroPosX < halfWinWidth)
         {
-            location.x  = m_pHero->getPositionX() + CCRANDOM_0_1() * halfWinWidth;
-        }
-        else if (heroPosX > (m_pTiledMap->getMapSize().width*m_fTileWidth - halfWinWidth))
-        {
-            location.x = m_pHero->getPositionX() + CCRANDOM_0_1() * halfWinWidth;
-        }
-        else
-        {
-            location.x = m_pHero->getPositionX() + CCRANDOM_MINUS1_1() * halfWinWidth;
+            location.x = m_pHero->getPositionX() + CCRANDOM_0_1()  * halfWinWidth;
+        }else if(heroPosX > (m_pTiledMap->getMapSize().width * m_fTileWidth - halfWinWidth)) {
+            location.x = m_pHero->getPositionX() - CCRANDOM_0_1()  * halfWinWidth;
+        }else {
+            location.x = m_pHero->getPositionX() + CCRANDOM_MINUS1_1()  * halfWinWidth;
         }
     }
     
     float maxY = m_fTileHeight * 3 + halfEnemyFrameHeight;
     location.y = CCRANDOM_0_1() * maxY;
-    if (location.y < halfEnemyFrameHeight)
+    if(location.y < halfEnemyFrameHeight)
     {
         location.y = halfEnemyFrameHeight;
     }
     
-    pEnemy->attack = CC_CALLBACK_0(GameLayer::onEnemyDead, this,pEnemy);
-    pEnemy->onDeadCallback = CC_CALLBACK_0(GameLayer::onEnemyDead, this,pEnemy);
+    pEnemy->attack = CC_CALLBACK_0(GameLayer::onEnemyAttack, this, pEnemy);
+    pEnemy->onDeadCallback = CC_CALLBACK_0(GameLayer::onEnemyDead, this, pEnemy);
     pEnemy->setPosition(m_origin + location);
     pEnemy->setZOrder(m_fScreenHeight - pEnemy->getPositionY());
     pEnemy->runIdleAction();
     pEnemy->setAttack(5);
     pEnemy->setHP(30);
-    pEnemy->setVelocity(Point(0.5f,0.5f));
+    pEnemy->setVelocity(Point(0.5f, 0.5f));
     pEnemy->setEyeArea(200);
     pEnemy->setAttackArea(25);
     
